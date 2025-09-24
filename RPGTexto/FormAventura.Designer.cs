@@ -3,6 +3,8 @@
     partial class FormAventura
     {
         private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.Button btnReiniciar;
+
 
         protected override void Dispose(bool disposing)
         {
@@ -23,6 +25,7 @@
             btnOpcao3 = new Button();
             lblVida = new Label();
             lblMana = new Label();
+            btnReiniciar = new Button();
             SuspendLayout();
             // 
             // lblHistoria
@@ -86,6 +89,16 @@
             lblMana.TabIndex = 5;
             lblMana.Text = "Mana: 0/0";
             // 
+            // btnReiniciar
+            // 
+            btnReiniciar.Location = new Point(420, 215);
+            btnReiniciar.Name = "btnReiniciar";
+            btnReiniciar.Size = new Size(60, 25);
+            btnReiniciar.TabIndex = 6;
+            btnReiniciar.Text = "Reiniciar";
+            btnReiniciar.UseVisualStyleBackColor = true;
+            btnReiniciar.Click += btnReiniciar_Click;
+            // 
             // FormAventura
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -97,11 +110,13 @@
             Controls.Add(btnOpcao3);
             Controls.Add(lblVida);
             Controls.Add(lblMana);
+            Controls.Add(btnReiniciar);
             Name = "FormAventura";
             Text = "RPG de Texto - Aventura";
             Load += FormAventura_Load;
             ResumeLayout(false);
             PerformLayout();
+
         }
 
         #endregion
