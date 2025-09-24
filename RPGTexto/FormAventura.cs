@@ -73,7 +73,7 @@ namespace RPGTexto
                     break;
 
                 case 6: //1-Atravessar lago
-                    lblHistoria.Text = "Você atravessa o lago a nado ou gasta magia para voar por ele?.";
+                    lblHistoria.Text = "Você atravessa o lago a nado ou gasta magia para voar por ele?";
                     btnOpcao1.Text = "Nadar"; //7
                     btnOpcao2.Text = "Voar (10 mana)"; //8
                     btnOpcao3.Text = "Voltar"; //1
@@ -81,14 +81,15 @@ namespace RPGTexto
                     break;
 
                 case 7: //6-nadar
-                    lblHistoria.Text = "";
-                    btnOpcao1.Text = ""; 
-                    btnOpcao2.Text = "";
+                    lblHistoria.Text = "Você nada pelo lago e acaba sendo atacado por . -20 de Vida!";
+                    jogador.Vida -= 20;
+                    btnOpcao1.Text = "Avançar"; // 
+                    btnOpcao2.Text = "Voltar";
                     btnOpcao3.Text = "";
                     btnOpcao3.Visible = false;
                     break;
 
-                case 8: //6-voar
+                case 8: //6/7-Chegando (voar/nadar)
                     lblHistoria.Text = "";
                     btnOpcao1.Text = "";
                     btnOpcao2.Text = "";
