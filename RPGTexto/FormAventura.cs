@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.Eventing.Reader;
+using System.Media;
 using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
 
@@ -7,6 +8,7 @@ namespace RPGTexto
 {
     public partial class FormAventura : Form
     {
+        private SoundPlayer musicaFundo;
         private Personagem jogador;
         private int cenaAtual = 0;
 
@@ -20,6 +22,9 @@ namespace RPGTexto
             InitializeComponent();
             jogador = personagem;
             MostrarCena(0);
+
+            musicaFundo = new SoundPlayer(@"C:\Users\user\source\repos\RPGTexto\RPGTexto\musica\som.wav");
+            //musicaFundo.PlayLooping(); // Toca em loop infinito
 
             if (acampamento == true)
             {
@@ -64,7 +69,7 @@ namespace RPGTexto
                     break;
 
                 case 2: // Beber água
-                    lblHistoria.Text = "Você bebe da água e se sente magicamente revigorado, mas isso tem um preço. MAna +5! Vida -10!";
+                    lblHistoria.Text = "Você bebe da água e se sente magicamente revigorado, mas isso tem um preço. Mana +5! Vida -10!";
                     jogador.Mana += 5;
                     jogador.Vida -= 10;
 
@@ -493,7 +498,11 @@ namespace RPGTexto
                 case 0: MostrarCena(11); break;      // -
                 case 1: MostrarCena(3); break;       // Atravessar
                 case 2: MostrarCena(1); break;       // Voltar 
-                case 3: MostrarCena(5); break;       // Voar   
+                case 3: 
+                    if (jogador.Mana > 15)
+                    { MessageBox.Show("Sem mana o suficiente!"); break;}
+                    else {MostrarCena(5); break;}    // Voar
+
                 case 4: MostrarCena(1); break;       // Voltar para a costa
                 case 5: MostrarCena(1); break;       // Voltar para a costa
                 case 6: MostrarCena(3); break;       // Voltar  
