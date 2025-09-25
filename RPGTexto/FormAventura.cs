@@ -21,7 +21,7 @@ namespace RPGTexto
 
         private void MostrarCena(int cena)
         {
-            cenaAtual = cena;
+                cenaAtual = cena;            
 
             // Sempre reativar todos os botões
             btnOpcao1.Visible = true;
@@ -37,7 +37,9 @@ namespace RPGTexto
                     btnOpcao3.Text = "Acampar";
                     break;
 
+                //
                 // CAMINHO DA ESQUERDA
+                //
 
                 case 1: // Esquerda
                     lblHistoria.Text = "Você se vê de frente a um lago silencioso.";
@@ -50,6 +52,13 @@ namespace RPGTexto
                     lblHistoria.Text = "Você bebe da água e se sente magicamente revigorado, mas isso tem um preço. MAna +5! Vida -10!";
                     jogador.Mana += 5;
                     jogador.Vida -= 10;
+
+                    if (jogador.Vida <= 0)
+                    {
+                        MostrarCena(91);
+                        return;
+                    }
+
                     btnOpcao1.Text = "Beber novamente"; //2
                     btnOpcao2.Text = "Voltar"; //1
                     btnOpcao3.Visible = false;
@@ -65,6 +74,13 @@ namespace RPGTexto
                 case 4: // Nadar
                     lblHistoria.Text = "Você nada pelo lago e acaba sendo atacado por criaturas. -20 de Vida!";
                     jogador.Vida -= 20;
+
+                    if (jogador.Vida <= 0)
+                    {
+                        MostrarCena(91);
+                        return;
+                    }
+
                     btnOpcao1.Text = "Avançar (Vila)"; //6
                     btnOpcao2.Text = "Voltar (Início)"; //1
                     btnOpcao3.Visible = false;
@@ -114,8 +130,10 @@ namespace RPGTexto
                     btnOpcao2.Text = "Voltar"; //9
                     btnOpcao3.Visible = false;
                     break;
-
+                
+                //
                 // CAMINHO DO MEIO
+                //
 
                 case 11: // Frente
                     lblHistoria.Text = "Você avista uma pequena cabana abandonada.";
@@ -144,9 +162,9 @@ namespace RPGTexto
                         lblHistoria.Text = "Você come a refeição.";
                         if (!refeicaoUsada)
                         {
-                            jogador.Vida += 20;
+                            jogador.Vida += 25;
                             refeicaoUsada = true; // marca como usada
-                            lblHistoria.Text += " Vida +20!";
+                            lblHistoria.Text += " Vida +25!";
                         }
                         btnOpcao1.Text = "Voltar"; //12
                         btnOpcao2.Visible = false;
@@ -191,27 +209,67 @@ namespace RPGTexto
                     btnOpcao3.Visible = false;
                     break;
 
-                case 17: // Reviver árvore
-                    if (jogador.Vida <= 60)
+                case 17:
+                    if (jogador.Mana >= 20)
                     {
-                        lblHistoria.Text = "Você tenta enfrentar a árvore, mas estava muito fraco. GAME OVER!";
-                        jogador.Mana -= 20;
-                        btnOpcao1.Visible = false;
-                        btnOpcao2.Visible = false;
+                        lblHistoria.Text = "A árvore se levanta com uma forma humanoide gigantesca. Ela parece estar com raiva e defendendo algo.";
+                        btnOpcao1.Text = "Lutar"; //18
+                        btnOpcao2.Text = "Fugir"; //90
                         btnOpcao3.Visible = false;
                     }
                     else
                     {
-                        lblHistoria.Text = "A árvore revive e se afasta após uma longa batalha. Você encontra um reino escondido dentro da floresta.";
-                        jogador.Mana -= 20;
-                        jogador.Vida -= 60;
-                        btnOpcao1.Text = "Adentrar no reino"; //999
+                        lblHistoria.Text = "Mana Insuficiente.";
+                        btnOpcao1.Text = "Voltar"; //14
                         btnOpcao2.Visible = false;
                         btnOpcao3.Visible = false;
-                    }
+                    }          
                     break;
 
+                case 18: // Reviver árvore                   
+                    if (jogador.Vida <= 60)
+                    {
+                         lblHistoria.Text = "Você tenta enfrentar a árvore, mas estava muito fraco. GAME OVER!";
+                         jogador.Mana -= 20;
+                         jogador.Vida = 0;
+                         btnOpcao1.Visible = false;
+                         btnOpcao2.Visible = false;
+                         btnOpcao3.Visible = false;
+                    }
+                    else
+                    {
+                         lblHistoria.Text = "A árvore revive e se afasta após uma longa batalha. Você encontra um reino escondido dentro da floresta.";
+                         jogador.Mana -= 20;
+                         jogador.Vida -= 60;
+                         btnOpcao1.Text = "Adentrar no reino"; //999
+                         btnOpcao2.Visible = false;
+                         btnOpcao3.Visible = false;
+                    }            
+                        break;
+
+                //
+                // CAMINHO DA DIRIETA
+                //
+
+
+
+                //
                 // FINAIS
+                //
+
+                case 90: //Morte pela arvore
+                    lblHistoria.Text = "GAME OVER! Você tenta correr, mas a árvore prende suas pernas com suas vinhas.";
+                    btnOpcao1.Visible = false;
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false;
+                    break;
+
+                case 91: //Morte por zerar a vida
+                    lblHistoria.Text = "GAME OVER! sua vida chegou a 0, você morre por conta dos seus grandes ferimentos.";
+                    btnOpcao1.Visible = false;
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false;
+                    break;
 
                 default:
                     lblHistoria.Text = "Fim da aventura (por enquanto)!";
@@ -228,6 +286,13 @@ namespace RPGTexto
         {
             lblVida.Text = $"Vida: {jogador.Vida}/{jogador.VidaMaxima}";
             lblMana.Text = $"Mana: {jogador.Mana}/{jogador.ManaMaxima}";
+
+            // Garante que não ultrapasse limites
+            if (jogador.Vida > jogador.VidaMaxima) jogador.Vida = jogador.VidaMaxima;
+            if (jogador.Mana > jogador.ManaMaxima) jogador.Mana = jogador.ManaMaxima;
+            if (jogador.Vida < 0) jogador.Vida = 0;
+            if (jogador.Mana < 0) jogador.Mana = 0;
+
         }
 
         // Método para verificar se o jogador tem toda a mana
@@ -248,7 +313,7 @@ namespace RPGTexto
             }
         }
 
-        private void btnOpcao1_Click(object sender, EventArgs e)
+        private void btnOpcao1_Click(object sender, EventArgs e) //1
         {
             switch (cenaAtual)
             {
@@ -277,14 +342,22 @@ namespace RPGTexto
                 case 14: MostrarCena(15); break;      // Rezar
                 case 15: MostrarCena(16); break;      // Avançar
                 case 16: MostrarCena(17); break;      // Revivier árvore
+                case 17: if (jogador.Mana >= 20)      // Lutar
+                    {MostrarCena(18); break;}
+                    else
+                    {MostrarCena(16); break;}
+                case 18: MostrarCena(999); break;     // Fim
+
+                // CAMINHO DA DIREITA
+
             }
         }
 
-        private void btnOpcao2_Click(object sender, EventArgs e)
+        private void btnOpcao2_Click(object sender, EventArgs e) //2
         {
             switch (cenaAtual)
             {
-                case 0: MostrarCena(11); break;       // -
+                case 0: MostrarCena(11); break;      // -
                 case 1: MostrarCena(3); break;       // Atravessar
                 case 2: MostrarCena(1); break;       // Voltar 
                 case 3: MostrarCena(5); break;       // Voar   
@@ -292,16 +365,31 @@ namespace RPGTexto
                 case 5: MostrarCena(1); break;       // Voltar para a costa
                 case 6: MostrarCena(3); break;       // Voltar  
                 case 7: MostrarCena(8); break;       // Casa   
-                case 8: MostrarCena(8); break;       // Ficar  
+                case 8: MostrarCena(7); break;       // Ficar  
                 case 9: MostrarCena(7); break;       // Voltar
 
                 // CAMINHO DO MEIO
 
                 case 11: MostrarCena(14); break;     // Ignorar
-                case 12: jogador.Vida -= 10; MostrarCena(14); MessageBox.Show("Você se cortou pulando a janela. Vida -10!");  break;     // Pular Janela
+                case 12: jogador.Vida -= 10;
+                    MessageBox.Show("Você se cortou pulando a janela. Vida -10!");
+                    if (jogador.Vida <= 0)
+                    {
+                        MostrarCena(91);
+                        return;
+                    }
+                    else 
+                    {
+                        MostrarCena(14);
+                    }
+                        break;                       // Pular Janela
                 case 14: MostrarCena(16); break;     // Ignorar
                 case 15: MostrarCena(11); break;     // Voltar Voltar
-                case 16: MostrarCena(14); break;     //
+                case 16: MostrarCena(14); break;     // Voltar
+                case 17: MostrarCena(90); break;     // Morreu
+
+                // CAMINHO DA DIREITA
+
             }
         }
 
@@ -318,6 +406,9 @@ namespace RPGTexto
                 case 11: MostrarCena(0); break;       // Voltar
                 case 12: MostrarCena(11); break;      // Voltar
                 case 14: MostrarCena(11); break;      // Voltar
+
+                // CAMINHO DA DIREITA
+
             }
         }
 
