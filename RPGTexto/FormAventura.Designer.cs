@@ -23,9 +23,14 @@
             btnOpcao1 = new Button();
             btnOpcao2 = new Button();
             btnOpcao3 = new Button();
+            this.txtSenha = new System.Windows.Forms.TextBox();
+            this.btnConfirmar = new System.Windows.Forms.Button();
+            this.Controls.Add(this.txtSenha);
+            this.Controls.Add(this.btnConfirmar);
             lblVida = new Label();
             lblMana = new Label();
             btnReiniciar = new Button();
+
             SuspendLayout();
             // 
             // lblHistoria
@@ -68,6 +73,26 @@
             btnOpcao3.Text = "Opção 3";
             btnOpcao3.UseVisualStyleBackColor = true;
             btnOpcao3.Click += btnOpcao3_Click;
+            //
+            // 
+            // txtSenha
+            // 
+            this.txtSenha.Location = new System.Drawing.Point(50, 300); // posição no form
+            this.txtSenha.Name = "txtSenha";
+            this.txtSenha.Size = new System.Drawing.Size(200, 23);
+            this.txtSenha.TabIndex = 10;
+            this.txtSenha.Visible = false;
+            //
+            // btnConfirmar
+            //
+            this.btnConfirmar.Location = new System.Drawing.Point(260, 300); // ao lado do txt
+            this.btnConfirmar.Name = "btnConfirmar";
+            this.btnConfirmar.Size = new System.Drawing.Size(100, 23);
+            this.btnConfirmar.TabIndex = 11;
+            this.btnConfirmar.Text = "Confirmar";
+            this.btnConfirmar.UseVisualStyleBackColor = true;
+            this.btnConfirmar.Visible = false;
+            this.btnConfirmar.Click += new System.EventHandler(this.btnConfirmar_Click);
             // 
             // lblVida
             // 
@@ -127,5 +152,8 @@
         private System.Windows.Forms.Button btnOpcao3; // novo botão
         private System.Windows.Forms.Label lblVida;
         private System.Windows.Forms.Label lblMana;
+        private System.Windows.Forms.TextBox txtSenha;
+        private System.Windows.Forms.Button btnConfirmar;
+
     }
 }

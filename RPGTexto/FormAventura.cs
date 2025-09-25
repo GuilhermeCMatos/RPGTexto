@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics.Eventing.Reader;
+using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
 
 namespace RPGTexto
@@ -11,12 +13,22 @@ namespace RPGTexto
         // Flags para eventos que só devem ocorrer uma vez
         private bool refeicaoUsada = false;
         private bool lapideUsada = false;
-
+        private bool acampamento = false;
+        string parte;
         public FormAventura(Personagem personagem)
         {
             InitializeComponent();
             jogador = personagem;
             MostrarCena(0);
+
+            if (acampamento == true)
+            {
+                parte = "está em um";
+            }
+            else
+            {
+                parte = "continua no";
+            }
         }
 
         private void MostrarCena(int cena)
@@ -27,14 +39,17 @@ namespace RPGTexto
             btnOpcao1.Visible = true;
             btnOpcao2.Visible = true;
             btnOpcao3.Visible = true;
+            // Sempre esconder input de senha
+            txtSenha.Visible = false;
+            btnConfirmar.Visible = false;
 
             switch (cenaAtual)
             {
                 case 0: //Base
-                    lblHistoria.Text = $"Bem-vindo {jogador.Nome}! Você acorda em uma floresta misteriosa.";
-                    btnOpcao1.Text = "Explorar à esquerda"; //1
-                    btnOpcao2.Text = "Seguir em frente"; //11
-                    btnOpcao3.Text = "Acampar";
+                    lblHistoria.Text = $"Bem-vindo {jogador.Nome}! Você acorda em uma floresta misteriosa. O ar a sua volta carrega um cheiro forte, juntamnete a uma pequena placa que indica um acampamento oposto a uma pequena trilha.";
+                    btnOpcao1.Text = "Explorar trilha"; //1
+                    btnOpcao2.Text = "Seguir um cheiro doce"; //11
+                    btnOpcao3.Text = "Ir para acampamento";
                     break;
 
                 //
@@ -127,7 +142,7 @@ namespace RPGTexto
                     lblHistoria.Text = "Você entra em um mundo de sonhos, cheio de cores e magia!";
                     jogador.Mana = 0;
                     btnOpcao1.Text = "Explorar o mundo dos sonhos"; //999
-                    btnOpcao2.Text = "Voltar"; //9
+                    btnOpcao2.Visible = false;
                     btnOpcao3.Visible = false;
                     break;
                 
@@ -251,7 +266,94 @@ namespace RPGTexto
                 // CAMINHO DA DIRIETA
                 //
 
+                case 19: //Acampamento
+                    lblHistoria.Text = "Você " + parte + " pequeno acampamento com uma cabana para descansar.";
+                    btnOpcao1.Text = "Acampar"; //20
+                    btnOpcao2.Text = "Seguir em frente"; //25
+                    btnOpcao3.Text = "Explorar acampamento"; //24
+                    break;
+                    
+                case 20: // Acampar
+                    if (acampamento == true)
+                    {
+                        lblHistoria.Text = "Você já está descansado.";
+                        btnOpcao1.Text = "Seguir em frente"; //25
+                        btnOpcao2.Text = "Voltar"; // 19
+                        btnOpcao3.Visible = false;
+                    }
+                    else
+                    {
+                        lblHistoria.Text = "Você prepara um pequena acampamneto e se recupera bem. Vida +50! Mana +25! Mas é atacado de manhã por lobos arcanos.";
+                        jogador.Vida += 50;
+                        jogador.Mana += 25;
+                        btnOpcao1.Text = "Atacar"; // 21
+                        btnOpcao2.Text = "Fugir"; // 92
+                        btnOpcao3.Visible = false;
+                    }
+                    break;
 
+                case 21: // Atacar
+                    lblHistoria.Text = "Você ataca usando uma arma ou magia?";
+                    acampamento = true;
+                    btnOpcao1.Text = "Arma"; // 22
+                    btnOpcao2.Text = "Magia (-15 mana)"; // 23
+                    btnOpcao3.Visible = false;
+                    break;
+
+                case 22: // Atacar com arma
+                    lblHistoria.Text = "Você empunha sua espada e parte para cima dos lobos, acabando com todos!";
+                    btnOpcao1.Text = "Continaur"; // 19
+                    btnOpcao2.Visible = false; 
+                    btnOpcao3.Visible = false;
+                    break;
+
+                case 23: // Atacar com magia
+                    lblHistoria.Text = "Você usa magia, mas eles pareciam ser muito resistentes a magias. Mana -15! Vida -20!";
+                    jogador.Vida -= 20;
+                    jogador.Mana -= 15;
+
+                    if (jogador.Vida <= 0)
+                    {
+                        MostrarCena(91);
+                        return;
+                    }
+                    else
+                    {
+                        MostrarCena(14);
+                    }
+
+                    btnOpcao1.Text = "Continuar"; // 19
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false; 
+                    break;
+
+                case 24: // Explorar
+                    lblHistoria.Text = "Você acha uma pequena placa abandonada escrita 'Senha: --. ..- ..'";
+                    btnOpcao1.Text = "Voltar"; //19
+                    btnOpcao2.Visible = false; 
+                    btnOpcao3.Visible = false; 
+                    break;
+
+                case 25: // Seguir
+                    lblHistoria.Text = "Passando o acampamento, você avista um alçapão de metal no chão de terra, com uma pequena frase entalhada em uma tela 'Digite a senha:'";
+
+                    // Oculta botões normais
+                    btnOpcao1.Text = "Voltar"; //19
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false;
+
+                    // Mostra entrada de senha
+                    txtSenha.Visible = true;
+                    btnConfirmar.Visible = true;
+                    txtSenha.Text = ""; // limpa antes
+                    break;
+
+                case 26: // 
+                    lblHistoria.Text = "Você se depara com uma cidadela subterrânea gigantesca, algo que você nunca esperaria ver!";
+                    btnOpcao1.Text = "Explorar cidadela"; // 999
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false;
+                    break;
 
                 //
                 // FINAIS
@@ -259,6 +361,7 @@ namespace RPGTexto
 
                 case 90: //Morte pela arvore
                     lblHistoria.Text = "GAME OVER! Você tenta correr, mas a árvore prende suas pernas com suas vinhas.";
+                    jogador.Vida = 0;
                     btnOpcao1.Visible = false;
                     btnOpcao2.Visible = false;
                     btnOpcao3.Visible = false;
@@ -266,6 +369,21 @@ namespace RPGTexto
 
                 case 91: //Morte por zerar a vida
                     lblHistoria.Text = "GAME OVER! sua vida chegou a 0, você morre por conta dos seus grandes ferimentos.";
+                    btnOpcao1.Visible = false;
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false;
+                    break;
+
+                case 92: //Morte por zerar a vida
+                    lblHistoria.Text = "GAME OVER! No meio da fuga, outros lobos aparecem e te alcançam.";
+                    jogador.Vida = 0;
+                    btnOpcao1.Visible = false;
+                    btnOpcao2.Visible = false;
+                    btnOpcao3.Visible = false;
+                    break;
+
+                case 93: // senha errada
+                    lblHistoria.Text = "GAME OVER! A senha estava incorreta, o alçapão libera um veneno mortal.";
                     btnOpcao1.Visible = false;
                     btnOpcao2.Visible = false;
                     btnOpcao3.Visible = false;
@@ -292,7 +410,6 @@ namespace RPGTexto
             if (jogador.Mana > jogador.ManaMaxima) jogador.Mana = jogador.ManaMaxima;
             if (jogador.Vida < 0) jogador.Vida = 0;
             if (jogador.Mana < 0) jogador.Mana = 0;
-
         }
 
         // Método para verificar se o jogador tem toda a mana
@@ -350,6 +467,22 @@ namespace RPGTexto
 
                 // CAMINHO DA DIREITA
 
+                case 19: MostrarCena(20); break;      // Acampar     
+                case 20: 
+                    if (acampamento == true) 
+                    {
+                        MostrarCena(25); break;       // Continuar
+                    } 
+                    else 
+                    {
+                        MostrarCena(21);  break;      // Atacar
+                    }      // Seguir em frnete 
+                case 21: MostrarCena(22); break;      // Atacar espada
+                case 22: MostrarCena(19); break;      // Voltar
+                case 23: MostrarCena(19); break;      // Voltar
+                case 24: MostrarCena(19); break;      // Voltar
+                case 25: MostrarCena(19); break;      // Voltar
+                case 26: MostrarCena(999); break;     // Fim     
             }
         }
 
@@ -390,6 +523,17 @@ namespace RPGTexto
 
                 // CAMINHO DA DIREITA
 
+                case 19: MostrarCena(25); break;     // Ignorar acampamento
+                case 20:
+                    if (acampamento == true)
+                    {
+                        MostrarCena(19); break;      // Voltar
+                    }
+                    else
+                    {
+                        MostrarCena(92); break;      // Morte por lobos
+                    }        
+                case 21: MostrarCena(23); break;     // Magia
             }
         }
 
@@ -397,7 +541,7 @@ namespace RPGTexto
         {
             switch (cenaAtual)
             {
-                case 0: MostrarCena(0); break;        // -  
+                case 0: MostrarCena(19); break;       // -  
                 case 1: MostrarCena(0); break;        // Voltar 
                 case 7: MostrarCena(6); break;        // Casa
 
@@ -409,6 +553,7 @@ namespace RPGTexto
 
                 // CAMINHO DA DIREITA
 
+                case 19: MostrarCena(24); break;      // explorar acampamento
             }
         }
 
@@ -421,10 +566,26 @@ namespace RPGTexto
             // Reseta flags de eventos
             refeicaoUsada = false;
             lapideUsada = false;
+            acampamento = false;
 
             // Volta para a primeira cena
             MostrarCena(0);
         }
+
+        private void btnConfirmar_Click(object sender, EventArgs e)
+        {
+            string senha = txtSenha.Text.Trim().ToLower(); // pega e normaliza
+
+            if (senha == "gui")
+            {
+                MostrarCena(26); // senha correta
+            }
+            else
+            {
+                MostrarCena(93); // senha errada
+            }
+        }
+
 
         private void FormAventura_Load(object sender, EventArgs e)
         {
